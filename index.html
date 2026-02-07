@@ -23,7 +23,7 @@
     }
 
     .frame {
-      flex: 1; /* 3개 영상 균등 분배 */
+      flex: 1; /* 영상 균등 분배 */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -33,13 +33,13 @@
     video {
       max-width: 100%;
       max-height: 100%;
-      object-fit: contain; /* 비율 유지, 잘림 없음 */
+      object-fit: contain; /* 영상 비율 유지 */
       background: black;
       controls: true; /* 재생 버튼 표시 */
     }
 
     .bottom-spacer {
-      height: 1100px; /* 요청한 하단 여백 */
+      height: 1100px; /* 하단 여백 */
       background: black;
       flex-shrink: 0;
     }
@@ -82,7 +82,7 @@
         hls.loadSource(url);
         hls.attachMedia(video);
 
-        // 토큰 만료나 오류시 재연결
+        // 토큰 만료나 오류시 자동 재연결
         hls.on(Hls.Events.ERROR, function(event, data) {
           if (data.fatal) {
             console.log("HLS error, retrying...");
@@ -95,10 +95,27 @@
       }
     }
 
+    // 3채널 재생
     playHLS(document.getElementById("videoTop"), TOP_URL);
     playHLS(document.getElementById("videoMiddle"), MIDDLE_URL);
     playHLS(document.getElementById("videoBottom"), BOTTOM_URL);
 
+    // 🔹 스크롤 위치 저장 & 복원
+    window.addEventListener("beforeunload", () => {
+      localStorage.setItem("scrollPos", window.scrollY);
+    });
+
+    window.addEventListener("load", () => {
+      const scrollPos = localStorage.getItem("scrollPos");
+      if(scrollPos !== null){
+        window.scrollTo(0, parseInt(scrollPos));
+      }
+    });
+
+    // 🔹 자동 새로고침 5분 (300,000ms)
+    setInterval(() => {
+      location.reload();
+    }, 10000);
   </script>
 </body>
 </html>
