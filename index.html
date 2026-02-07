@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>버스기사 CCTV 뷰어</title>
+  <title>CCTV Viewer</title>
 
-  <!-- hls.js (안드로이드 필수) -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
   <style>
@@ -17,6 +16,13 @@
       overflow: hidden;
     }
 
+    /* 🔽 삼성인터넷 주소창 회피용 상단 여백 */
+    .top-spacer {
+      height: 60px;
+      background: black;
+      flex-shrink: 0;
+    }
+
     .container {
       display: flex;
       flex-direction: column;
@@ -26,14 +32,14 @@
     .frame {
       flex: 1;
       position: relative;
-      overflow: hidden;   /* 여기서 자르기 */
+      overflow: hidden;
       background: black;
     }
 
     video {
       width: 100%;
       height: 100%;
-      object-fit: cover;   /* 꽉 차게 */
+      object-fit: cover;
       background: black;
     }
   </style>
@@ -42,6 +48,8 @@
 <body>
 
   <div class="container">
+
+    <div class="top-spacer"></div>
 
     <!-- 위 CCTV -->
     <div class="frame">
@@ -56,27 +64,29 @@
   </div>
 
   <script>
-    // 🔽 네이버 지도에서 딴 m3u8 주소 넣기
     const TOP_URL = "https://cctvsecn01.ktict.co.kr:8082/mgmt025/mgmtcctv00000251D/main_stream.m3u8?nimblesessionid=14020657&wmsAuthSign=c2VydmVyX3RpbWU9Mi83LzIwMjYgMTI6MzU6NTggUE0maGFzaF92YWx1ZT11dUJ0dGM1eE1vMlhKajhpK3RPNzNnPT0mdmFsaWRtaW51dGVzPTEyMCZpZD1uaG5jb3JwI25hdmVybWFwbGl2ZSM2";
+
     const BOTTOM_URL = "https://cctvsecn01.ktict.co.kr:8082/mgmt025/mgmtcctv00000252D/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9Mi83LzIwMjYgMTI6NDg6NDkgUE0maGFzaF92YWx1ZT1LYTVKQmU3L3VENzRLQUk2a25kamt3PT0mdmFsaWRtaW51dGVzPTEyMCZpZD1uaG5jb3JwI25hdmVybWFwbGl2ZSM3";
 
     function playHLS(video, url) {
       if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // iOS Safari
         video.src = url;
         video.play();
       } else if (Hls.isSupported()) {
         const hls = new Hls({
           liveSyncDuration: 3,
           liveMaxLatencyDuration: 6,
-          maxBufferLength: 10
+          maxBufferLength: 10,
+          enableWorker: true,
+          lowLatencyMode: false
         });
+
         hls.loadSource(url);
         hls.attachMedia(video);
 
-        // 에러 나면 자동 재연결
         hls.on(Hls.Events.ERROR, function (event, data) {
           if (data.fatal) {
+            console.log("HLS error, retrying...");
             setTimeout(() => {
               hls.destroy();
               playHLS(video, url);
