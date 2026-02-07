@@ -15,16 +15,11 @@
       background: black;
     }
 
-    /* 🔽 삼성인터넷 주소창 회피용 상단 여백 */
-    .bottom-spacer {
-      height: 800px;
-      background: black;
-    }
-
     .container {
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      background: black;
     }
 
     .frame {
@@ -38,8 +33,15 @@
     video {
       max-width: 100%;
       max-height: 100%;
-      object-fit: contain; /* 🔥 절대 안 잘림 */
+      object-fit: contain; /* 절대 안 잘림 */
       background: black;
+    }
+
+    /* 🔽 하단 여백 (주소창 숨길 때 대비) */
+    .bottom-spacer {
+      height: 800px;
+      background: black;
+      flex-shrink: 0;
     }
   </style>
 </head>
@@ -47,8 +49,6 @@
 <body>
 
   <div class="container">
-
-    <div class="top-spacer"></div>
 
     <!-- 위 CCTV -->
     <div class="frame">
@@ -59,6 +59,9 @@
     <div class="frame">
       <video id="videoBottom" autoplay muted playsinline></video>
     </div>
+
+    <!-- 하단 여백 -->
+    <div class="bottom-spacer"></div>
 
   </div>
 
@@ -76,7 +79,6 @@
           maxBufferLength: 10,
           liveSyncDuration: 3
         });
-
         hls.loadSource(url);
         hls.attachMedia(video);
       }
