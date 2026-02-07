@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>버스기사 CCTV 뷰어</title>
+
+  <!-- hls.js (안드로이드 필수) -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .frame {
+      flex: 1;
+      position: relative;
+      overflow: hidden;   /* 여기서 자르기 */
+      background: black;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;   /* 꽉 차게 */
+      background: black;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- 위 CCTV -->
+    <div class="frame">
+      <video id="videoTop" autoplay muted playsinline></video>
+    </div>
+
+    <!-- 아래 CCTV -->
+    <div class="frame">
+      <video id="videoBottom" autoplay muted playsinline></video>
+    </div>
+
+  </div>
+
+  <script>
+    // 🔽 네이버 지도에서 딴 m3u8 주소 넣기
+    const TOP_URL = "여기에_위_CCTV_m3u8";
+    const BOTTOM_URL = "여기에_아래_CCTV_m3u8";
+
+    function playHLS(video, url) {
+      if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // iOS Safari
+        video.src = url;
+        video.play();
+      } else if (Hls.isSupported()) {
+        const hls = new Hls({
+          liveSyncDuration: 3,
+          liveMaxLatencyDuration: 6,
+          maxBufferLength: 10
+        });
+        hls.loadSource(url);
+        hls.attachMedia(video);
+
+        // 에러 나면 자동 재연결
+        hls.on(Hls.Events.ERROR, function (event, data) {
+          if (data.fatal) {
+            setTimeout(() => {
+              hls.destroy();
+              playHLS(video, url);
+            }, 3000);
+          }
+        });
+      }
+    }
+
+    playHLS(document.getElementById("videoTop"), TOP_URL);
+    playHLS(document.getElementById("videoBottom"), BOTTOM_URL);
+  </script>
+
+</body>
+</html>
