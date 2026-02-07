@@ -1,1 +1,1 @@
-# buscctv_gwang_am2
+# buscctv_gwang_am_naver
