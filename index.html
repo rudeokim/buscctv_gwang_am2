@@ -57,8 +57,8 @@
 
   <script>
     // 🔽 네이버 지도에서 딴 m3u8 주소 넣기
-    const TOP_URL = "여기에_위_CCTV_m3u8";
-    const BOTTOM_URL = "여기에_아래_CCTV_m3u8";
+    const TOP_URL = "https://cctvsecn01.ktict.co.kr:8082/mgmt025/mgmtcctv00000251D/main_stream.m3u8?nimblesessionid=14020657&wmsAuthSign=c2VydmVyX3RpbWU9Mi83LzIwMjYgMTI6MzU6NTggUE0maGFzaF92YWx1ZT11dUJ0dGM1eE1vMlhKajhpK3RPNzNnPT0mdmFsaWRtaW51dGVzPTEyMCZpZD1uaG5jb3JwI25hdmVybWFwbGl2ZSM2";
+    const BOTTOM_URL = "https://cctvsecn01.ktict.co.kr:8082/mgmt025/mgmtcctv00000252D/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9Mi83LzIwMjYgMTI6NDg6NDkgUE0maGFzaF92YWx1ZT1LYTVKQmU3L3VENzRLQUk2a25kamt3PT0mdmFsaWRtaW51dGVzPTEyMCZpZD1uaG5jb3JwI25hdmVybWFwbGl2ZSM3";
 
     function playHLS(video, url) {
       if (video.canPlayType('application/vnd.apple.mpegurl')) {
