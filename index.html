@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CCTV Viewer</title>
+  <title>CCTV Viewer 3채널</title>
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
@@ -23,7 +23,7 @@
     }
 
     .frame {
-      height: 50vh;
+      flex: 1;                 /* 3개라서 각 영상 화면 균등 분배 */
       background: black;
       display: flex;
       align-items: center;
@@ -33,13 +33,15 @@
     video {
       max-width: 100%;
       max-height: 100%;
-      object-fit: contain; /* 절대 안 잘림 */
+      object-fit: contain; /* 잘림 없음 */
       background: black;
+      /* controls 켜고 싶으면 아래 주석 제거 */
+      /* controls */
     }
 
-    /* 🔽 하단 여백 (주소창 숨길 때 대비) */
+    /* 하단 여백 */
     .bottom-spacer {
-      height: 1100px;
+      height: 60px;
       background: black;
       flex-shrink: 0;
     }
@@ -52,12 +54,17 @@
 
     <!-- 위 CCTV -->
     <div class="frame">
-      <video id="videoTop" autoplay muted playsinline controls></video>
+      <video id="videoTop" autoplay muted playsinline></video>
+    </div>
+
+    <!-- 중간 CCTV -->
+    <div class="frame">
+      <video id="videoMiddle" autoplay muted playsinline></video>
     </div>
 
     <!-- 아래 CCTV -->
     <div class="frame">
-      <video id="videoBottom" autoplay muted playsinline controls></video>
+      <video id="videoBottom" autoplay muted playsinline></video>
     </div>
 
     <!-- 하단 여백 -->
@@ -67,8 +74,8 @@
 
   <script>
     const TOP_URL = "https://cctvsecn01.ktict.co.kr:8082/mgmt025/mgmtcctv00000251D/main_stream.m3u8?nimblesessionid=14020657&wmsAuthSign=c2VydmVyX3RpbWU9Mi83LzIwMjYgMTI6MzU6NTggUE0maGFzaF92YWx1ZT11dUJ0dGM1eE1vMlhKajhpK3RPNzNnPT0mdmFsaWRtaW51dGVzPTEyMCZpZD1uaG5jb3JwI25hdmVybWFwbGl2ZSM2";
-
-    const BOTTOM_URL = "https://cctvsecn01.ktict.co.kr:8082/mgmt017/mgmtcctv00001510D/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9Mi83LzIwMjYgMTo1Mzo1OSBQTSZoYXNoX3ZhbHVlPWNLOUJGRGxmSW4wR3VrS0xqZDlMcWc9PSZ2YWxpZG1pbnV0ZXM9MTIwJmlkPW5obmNvcnAjbmF2ZXJtYXBsaXZlIzM5NTc=";
+    const MIDDLE_URL = "https://cctvsecn01.ktict.co.kr:8082/mgmt025/mgmtcctv00000252D/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9Mi83LzIwMjYgMjoxNjoxNiBQTSZoYXNoX3ZhbHVlPTRtNUhvZU43c0JwZXRrSWdONnRsK3c9PSZ2YWxpZG1pbnV0ZXM9MTIwJmlkPW5obmNvcnAjbmF2ZXJtYXBsaXZlIzc=";
+    const BOTTOM_URL = "https://cctvsecn01.ktict.co.kr:8082/mgmt025/mgmtcctv00000252D/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9Mi83LzIwMjYgMTI6NDg6NDkgUE0maGFzaF92YWx1ZT1LYTVKQmU3L3VENzRLQUk2a25kamt3PT0mdmFsaWRtaW51dGVzPTEyMCZpZD1uaG5jb3JwI25hdmVybWFwbGl2ZSM3";
 
     function playHLS(video, url) {
       if (video.canPlayType('application/vnd.apple.mpegurl')) {
@@ -85,7 +92,9 @@
     }
 
     playHLS(document.getElementById("videoTop"), TOP_URL);
+    playHLS(document.getElementById("videoMiddle"), MIDDLE_URL);
     playHLS(document.getElementById("videoBottom"), BOTTOM_URL);
+
   </script>
 
 </body>
